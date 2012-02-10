@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="daysOfWeek">
+        <item>Samstag</item>
+        <item>Sonntag</item>
+        <item>Montag</item>
+        <item>Dienstag</item>
+        <item>Mittwoch</item>
+        <item>Donnerstag</item>
+        <item>Freitag</item>
+        <item>nächster Samstag</item>
+        <item>nächster Sonntag</item>
+        <item>nächster Montag</item>
+        <item>nächster Dienstag</item>
+        <item>nächster Mittwoch</item>
+        <item>nächster Donnerstag</item>
+        <item>nächster Freitag</item>
+    </array>
+    <string name="today">Heute</string>
+    
+</resources>
