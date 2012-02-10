@@ -54,10 +54,10 @@ public enum Mensa {
 	/**
 	 * Liefert den Namen der Mensa.
 	 */
-	public String toString() {
+	public String getName() {
 		return name;
 	}
-
+	
 	/**
 	 * Liefert den Speiseplan.
 	 */

@@ -46,6 +46,6 @@ public class MenuActionBar extends MenuHelper {
 		TextView subtext = (TextView) activity.findViewById(R.id.actionbar_subtext);
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.DAY_OF_MONTH, day - activity.getToday());
-		subtext.setText(DateUtils.formatDateTime(activity, c.getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR) + ", " + activity.getMensa());
+		subtext.setText(DateUtils.formatDateTime(activity, c.getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR) + ", " + activity.getMensa().getName());
 	}
 }

@@ -3,6 +3,8 @@
 import java.util.Calendar;
 import java.util.List;
 import android.app.ListActivity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +36,20 @@ public class MensaActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		instance = this;
+		
+		// Falls irgendwas gespeichert
+		SharedPreferences pref = getPreferences(0);
+		String m = pref.getString("mensa", null);
+		if(m != null)
+		{
+			try
+			{
+				mensa = Mensa.valueOf(m);
+			}
+			catch( IllegalArgumentException e )
+			{
+			}
+		}
 
 		// Tag ausrechnen, der angezeigt werden soll.
 		today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -50,7 +66,7 @@ public class MensaActivity extends ListActivity {
 
 		loadMensa(naechsteWoche);
 	}
-
+	
 	/**
 	 * Lädt die Mensa bzw. den Plan.
 	 * 
@@ -149,7 +165,7 @@ public class MensaActivity extends ListActivity {
 		}
 
 		for (Mensa mensa : Mensa.values()) {
-			menu.add(2, mensa.hashCode(), 50, mensa.toString());
+			menu.add(2, mensa.hashCode(), 50, mensa.getName());
 		}
 		return true;
 	}
@@ -179,6 +195,12 @@ public class MensaActivity extends ListActivity {
 				if (item.getItemId() == mensa.hashCode()) {
 					this.mensa = mensa;
 					loadMensa(today > Calendar.FRIDAY);
+					
+					// Speichern.
+					SharedPreferences pref = getPreferences(0);
+					Editor editor = pref.edit();
+					editor.putString("mensa", mensa.toString());
+					editor.commit();
 					break;
 				}
 			}
