@@ -2,6 +2,11 @@
 
 import java.util.HashMap;
 
+/**
+ * Einfache HashMap, um später daraus die Liste der Essen zu generieren.
+ * 
+ * @author Marcus Bauer (mabako@gmail.com)
+ */
 public class Essen extends HashMap< String, String >{
 	public static final String TEXT = "TEXT";
 	public static final String TEXT2 = "TEXT2";

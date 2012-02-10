@@ -8,29 +8,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SimpleAdapter;
 
+/**
+ * Die Hauptklasse unserer MensaApp.
+ * 
+ * @author Marcus Bauer (mabako@gmail.com)
+ */
 public class MensaActivity extends ListActivity {
-	/**
-	 * Instanz dieser Aktivität.
-	 */
+	/** Instanz dieser Aktivität. */
 	private static MensaActivity instance;
 
-	/**
-	 * Heutiger Wochentag
-	 */
+	/** Heutiger Wochentag. */
 	private int today;
 
-	/**
-	 * zu nutzende Mensa.
-	 */
+	/** zu nutzende Mensa. */
 	private Mensa mensa = Mensa.RING;
 
-	/**
-	 * Menü
-	 */
+	/** Menü */
 	private MenuHelper menu;
 
 	/**
-	 * Setzt die Liste und lädt die Einträge.
+	 * Berechnet den heutigen Tag, erstellt das Menü und lädt den Speiseplan.
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +91,11 @@ public class MensaActivity extends ListActivity {
 		}
 	}
 
+	/**
+	 * Zeigt den Speiseplan für einen Tag an.
+	 * 
+	 * @param day
+	 */
 	public void showDay(int day) {
 		// Im Titel den Tag anzeigen
 		setTitle(getNameOfDay(day));
@@ -106,32 +108,60 @@ public class MensaActivity extends ListActivity {
 		setListAdapter(adapter);
 	}
 
+	/**
+	 * Liefert den heutigen (relativen) Tag zurück.
+	 * 
+	 * 2-6 entspricht Montag bis Freitag der aktuellen Woche, 9-13 entspricht
+	 * Montag bis Freitag der nächsten Woche.
+	 * 
+	 * @return heutiger Tag.
+	 */
 	public int getToday() {
 		return instance.today;
 	}
 
+	/**
+	 * Liefert die aktuelle Mensa zurück.
+	 * 
+	 * @return
+	 */
 	public Mensa getMensa() {
 		return instance.mensa;
 	}
 
+	/**
+	 * Stellt ein Standard-Android-Menü bereit, welches mittels Menütaste
+	 * erreichbar ist.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		for( int i = today; i <= 7 + Calendar.FRIDAY; ++ i )
-		{
-			if( i % 7 > Calendar.SUNDAY )
-			{
+		for (int i = today; i <= 7 + Calendar.FRIDAY; ++i) {
+			if (i % 7 > Calendar.SUNDAY) {
 				menu.add(Menu.NONE, i, i, getNameOfDay(i));
 			}
 		}
 		return true;
 	}
 
+	/**
+	 * Handler für das Drücken des Standard-Android-Menüs.
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		showDay(item.getItemId());
 		return true;
 	}
-	
+
+	/**
+	 * Gibt den Namen des Tages zurück.
+	 * 
+	 * Dies ist im Allgemeinen entweder Heute, (Wochentag) oder nächster
+	 * (Wochentag).
+	 * 
+	 * @param day
+	 * @return Name des Tages
+	 * @see MensaActivity#getToday()
+	 */
 	public String getNameOfDay(int day) {
 		if (day == today)
 			return MensaActivity.getInstance().getString(R.string.today);
