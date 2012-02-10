@@ -122,7 +122,7 @@ public class MensaActivity extends ListActivity {
 	 */
 	public void showDay(int day) {
 		// Im Titel den Tag anzeigen
-		setTitle(getNameOfDay(day));
+		setTitle(getNameOfDay(day) + ", " + mensa.getName());
 		menu.updateTitle(day);
 
 		// Liste mit Essen anzeigen.
