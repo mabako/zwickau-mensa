@@ -32,7 +32,7 @@ public class MenuActionBar extends MenuHelper {
 		actionBar.setDisplayShowCustomEnabled(true);
 
 		// ActionBar für "Heute" aktualisieren.
-		updateTitle(activity.getToday());
+		updateTitle(activity.getCurrentDay());
 	}
 
 	/**

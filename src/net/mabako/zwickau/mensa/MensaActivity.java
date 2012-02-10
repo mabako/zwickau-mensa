@@ -21,6 +21,9 @@ public class MensaActivity extends ListActivity {
 
 	/** Heutiger Wochentag. */
 	private int today;
+	
+	/** Aktuell angezeigter Wochentag. */
+	private int currentDay;
 
 	/** zu nutzende Mensa. */
 	private Mensa mensa = Mensa.RING;
@@ -55,9 +58,11 @@ public class MensaActivity extends ListActivity {
 		today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 		boolean naechsteWoche = false;
 		if (today == Calendar.SATURDAY || today == Calendar.SUNDAY) {
-			today = 7 + Calendar.MONDAY;
+			currentDay = 7 + Calendar.MONDAY;
 			naechsteWoche = true;
 		}
+		else
+			currentDay = today;
 
 		// Menü erstellen.
 		if (menu == null) {
@@ -107,11 +112,11 @@ public class MensaActivity extends ListActivity {
 	 * @param naechsteWoche
 	 */
 	public void update(boolean naechsteWoche) {
-		showDay(today);
+		showDay(currentDay);
 
 		// Noch keine Einträge für nächste Woche geladen, also tun wir das.
 		if (!naechsteWoche && !mensa.hasAnyFood(true)) {
-			loadPlan(true, true);
+			loadPlan(true, currentDay <= Calendar.FRIDAY);
 		}
 	}
 
@@ -122,6 +127,7 @@ public class MensaActivity extends ListActivity {
 	 */
 	public void showDay(int day) {
 		// Im Titel den Tag anzeigen
+		currentDay = day;
 		setTitle(getNameOfDay(day) + ", " + mensa.getName());
 		menu.updateTitle(day);
 
@@ -141,6 +147,14 @@ public class MensaActivity extends ListActivity {
 	 */
 	public int getToday() {
 		return instance.today;
+	}
+	
+	/**
+	 * Gibt den zurzeit angezeigten Tag zurück.
+	 * @see MensaActivity#getToday()
+	 */
+	public int getCurrentDay() {
+		return currentDay;
 	}
 
 	/**
