@@ -158,6 +158,7 @@ public class MensaActivity extends ListActivity {
 	 * Handler für das Anzeigen des Standard-Android-Menüs.
 	 */
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		// Die Mensa verstecken, welche aktuell angezeigt wird.
 		for (Mensa mensa : Mensa.values()) {
 			menu.findItem(mensa.hashCode()).setVisible(this.mensa != mensa);
 		}
@@ -172,7 +173,7 @@ public class MensaActivity extends ListActivity {
 		switch (item.getGroupId()) {
 		case 1:
 			showDay(item.getItemId());
-			break;
+			return true;
 		case 2:
 			for (Mensa mensa : Mensa.values()) {
 				if (item.getItemId() == mensa.hashCode()) {
@@ -181,9 +182,9 @@ public class MensaActivity extends ListActivity {
 					break;
 				}
 			}
-			break;
+			return true;
 		}
-		return true;
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
