@@ -22,7 +22,7 @@ import android.os.AsyncTask;
  * 
  * @author Marcus Bauer (mabako@gmail.com)
  */
-public class MensaTask extends AsyncTask<String, Void, Void> {
+public class MensaTask extends AsyncTask<Void, Void, Void> {
 	/** Encoding der Mensa-Seiten. */
 	private static final String ENCODING = "windows-1252";
 
@@ -35,14 +35,14 @@ public class MensaTask extends AsyncTask<String, Void, Void> {
 	/** Im Hintergrund? Falls ja wird kein Fortschrittsdialog angezeigt. */
 	private boolean background = false;
 
-	/** Der zu füllende Plan */
-	private MensaPlan plan;
+	/** Die entsprechende Mensa. */
+	private Mensa mensa;
 
 	/**
 	 * Erzeugt den Task.
 	 * 
-	 * @param plan
-	 *            der zu füllende Plan.
+	 * @param mensa
+	 *            die entsprechende Mensa.
 	 * @param naechsteWoche
 	 *            <code>true</code>, falls das Essen der nächsten Woche geholt
 	 *            werden soll.
@@ -50,9 +50,9 @@ public class MensaTask extends AsyncTask<String, Void, Void> {
 	 *            falls <code>true</code>, wird kein Fortschrittsdialog
 	 *            angezeigt.
 	 */
-	public MensaTask(MensaPlan plan, boolean naechsteWoche, boolean background) {
+	public MensaTask(Mensa mensa, boolean naechsteWoche, boolean background) {
+		this.mensa = mensa;
 		this.naechsteWoche = naechsteWoche;
-		this.plan = plan;
 		this.background = background;
 	}
 
@@ -73,16 +73,16 @@ public class MensaTask extends AsyncTask<String, Void, Void> {
 	 * Webseite herunterladen, parsen, Plan füllen.
 	 */
 	@Override
-	protected Void doInBackground(String... params) {
+	protected Void doInBackground(Void... params) {
 		try {
 			// Seite laden
-			InputStreamReader response = fetchSite(params[0]);
+			InputStreamReader response = fetchSite(mensa.getURL(naechsteWoche));
 
 			// String bauen
 			String responseText = readAllContent(response);
 
 			// In den Plan einfügen.
-			plan.parse(responseText, naechsteWoche);
+			mensa.getPlan().parse(responseText, naechsteWoche);
 		} catch (Exception e) {
 		}
 		return null;
@@ -138,13 +138,11 @@ public class MensaTask extends AsyncTask<String, Void, Void> {
 	}
 
 	/**
-	 * Speichert den Plan im Cache, sagt der MensaActivity, dass wir fertig
-	 * sind, versteckt den Fortschrittsdialog.
+	 * Sagt der MensaActivity, dass wir fertig sind und versteckt den
+	 * Fortschrittsdialog.
 	 */
 	@Override
 	public void onPostExecute(Void result) {
-		Cache.set(plan);
-
 		// Aktuelle Woche ODER es ist schon Samstag/Sonntag, also wird der Plan
 		// aktualisiert.
 		MensaActivity.getInstance().update(naechsteWoche);

@@ -48,9 +48,18 @@ public class MensaActivity extends ListActivity {
 			menu = MenuHelper.getInstance();
 		}
 
-		if (!Cache.isSet()) {
+		loadMensa(naechsteWoche);
+	}
+
+	/**
+	 * Lädt die Mensa bzw. den Plan.
+	 * 
+	 * @param naechsteWoche
+	 */
+	private void loadMensa(boolean naechsteWoche) {
+		if (!mensa.hasAnyFood(naechsteWoche)) {
 			// Mensa-Webseite laden.
-			loadPlan(new MensaPlan(), naechsteWoche, false);
+			loadPlan(naechsteWoche, false);
 		} else {
 			// Schon ein Plan da, nehmen wir doch den.
 			update(naechsteWoche);
@@ -69,12 +78,11 @@ public class MensaActivity extends ListActivity {
 	/**
 	 * Lädt einen Mensaplan
 	 * 
-	 * @param plan
 	 * @param naechsteWoche
 	 * @param background
 	 */
-	private void loadPlan(MensaPlan plan, boolean naechsteWoche, boolean background) {
-		new MensaTask(plan == null ? Cache.get() : plan, naechsteWoche, background).execute(mensa.getURL(naechsteWoche));
+	private void loadPlan(boolean naechsteWoche, boolean background) {
+		new MensaTask(mensa, naechsteWoche, background).execute();
 	}
 
 	/**
@@ -86,8 +94,8 @@ public class MensaActivity extends ListActivity {
 		showDay(today);
 
 		// Noch keine Einträge für nächste Woche geladen, also tun wir das.
-		if (!naechsteWoche && Cache.get().get(9).size() == 0) {
-			loadPlan(null, true, true);
+		if (!naechsteWoche && !mensa.hasAnyFood(true)) {
+			loadPlan(true, true);
 		}
 	}
 
@@ -102,8 +110,7 @@ public class MensaActivity extends ListActivity {
 		menu.updateTitle(day);
 
 		// Liste mit Essen anzeigen.
-		MensaPlan plan = Cache.get();
-		List<Essen> essen = plan.get(day);
+		List<Essen> essen = mensa.getPlan().get(day);
 		SimpleAdapter adapter = new SimpleAdapter(this, essen, android.R.layout.simple_list_item_2, new String[] { Essen.TEXT, Essen.TEXT2 }, new int[] { android.R.id.text1, android.R.id.text2 });
 		setListAdapter(adapter);
 	}
@@ -137,8 +144,22 @@ public class MensaActivity extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		for (int i = today; i <= 7 + Calendar.FRIDAY; ++i) {
 			if (i % 7 > Calendar.SUNDAY) {
-				menu.add(Menu.NONE, i, i, getNameOfDay(i));
+				menu.add(1, i, i, getNameOfDay(i));
 			}
+		}
+
+		for (Mensa mensa : Mensa.values()) {
+			menu.add(2, mensa.hashCode(), 50, mensa.toString());
+		}
+		return true;
+	}
+
+	/**
+	 * Handler für das Anzeigen des Standard-Android-Menüs.
+	 */
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		for (Mensa mensa : Mensa.values()) {
+			menu.findItem(mensa.hashCode()).setVisible(this.mensa != mensa);
 		}
 		return true;
 	}
@@ -148,7 +169,20 @@ public class MensaActivity extends ListActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		showDay(item.getItemId());
+		switch (item.getGroupId()) {
+		case 1:
+			showDay(item.getItemId());
+			break;
+		case 2:
+			for (Mensa mensa : Mensa.values()) {
+				if (item.getItemId() == mensa.hashCode()) {
+					this.mensa = mensa;
+					loadMensa(today > Calendar.FRIDAY);
+					break;
+				}
+			}
+			break;
+		}
 		return true;
 	}
 
