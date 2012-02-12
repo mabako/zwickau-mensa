@@ -21,7 +21,7 @@ public class MensaActivity extends ListActivity {
 
 	/** Heutiger Wochentag. */
 	private int today;
-	
+
 	/** Aktuell angezeigter Wochentag. */
 	private int currentDay;
 
@@ -39,18 +39,14 @@ public class MensaActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		instance = this;
-		
+
 		// Falls irgendwas gespeichert
 		SharedPreferences pref = getPreferences(0);
 		String m = pref.getString("mensa", null);
-		if(m != null)
-		{
-			try
-			{
+		if (m != null) {
+			try {
 				mensa = Mensa.valueOf(m);
-			}
-			catch( IllegalArgumentException e )
-			{
+			} catch (IllegalArgumentException e) {
 			}
 		}
 
@@ -60,8 +56,13 @@ public class MensaActivity extends ListActivity {
 		if (today == Calendar.SATURDAY || today == Calendar.SUNDAY) {
 			currentDay = 7 + Calendar.MONDAY;
 			naechsteWoche = true;
-		}
-		else
+
+			// Der Anfang der aktuellen Woche ist Sonntag (1) und das Ende der
+			// Woche Samstag (7)...
+			// Also müssen wir das hier korrigieren.
+			if (today == Calendar.SUNDAY)
+				today += 7;
+		} else
 			currentDay = today;
 
 		// Menü erstellen.
@@ -71,7 +72,7 @@ public class MensaActivity extends ListActivity {
 
 		loadMensa(naechsteWoche);
 	}
-	
+
 	/**
 	 * Lädt die Mensa bzw. den Plan.
 	 * 
@@ -148,9 +149,10 @@ public class MensaActivity extends ListActivity {
 	public int getToday() {
 		return instance.today;
 	}
-	
+
 	/**
 	 * Gibt den zurzeit angezeigten Tag zurück.
+	 * 
 	 * @see MensaActivity#getToday()
 	 */
 	public int getCurrentDay() {
@@ -209,7 +211,7 @@ public class MensaActivity extends ListActivity {
 				if (item.getItemId() == mensa.hashCode()) {
 					this.mensa = mensa;
 					loadMensa(today > Calendar.FRIDAY);
-					
+
 					// Speichern.
 					SharedPreferences pref = getPreferences(0);
 					Editor editor = pref.edit();
