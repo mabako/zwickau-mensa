@@ -45,7 +45,19 @@ public enum Mensa {
 	public String getURL(boolean naechsteWoche) {
 		if (naechsteWoche) {
 			Calendar c = Calendar.getInstance();
-			c.add(Calendar.DAY_OF_MONTH, 7);
+			
+			// Aufgrund unterschiedlicher Wochenanfänge (Sonntag, Montag) hier der folgende Code:
+			if(c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+			{
+				// von Sonntag -> Montag springen.
+				c.add(Calendar.DAY_OF_YEAR, 1);
+			}
+			else
+			{
+				// Ist kein Sonntag, daher entfällt auch das Anfang-der-Woche prüfen.
+				c.add(Calendar.DAY_OF_YEAR, 7);
+			}
+			
 			return next + "year=" + c.get(Calendar.YEAR) + "&week=" + c.get(Calendar.WEEK_OF_YEAR);
 		} else
 			return current;
