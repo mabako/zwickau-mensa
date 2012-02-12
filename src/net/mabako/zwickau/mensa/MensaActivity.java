@@ -2,6 +2,8 @@
 
 import java.util.Calendar;
 import java.util.List;
+
+import net.mabako.zwickau.mensa.menu.MenuHelper;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -78,7 +80,7 @@ public class MensaActivity extends ListActivity {
 	 * 
 	 * @param naechsteWoche
 	 */
-	private void loadMensa(boolean naechsteWoche) {
+	public void loadMensa(boolean naechsteWoche) {
 		if (!mensa.hasAnyFood(naechsteWoche)) {
 			// Mensa-Webseite laden.
 			loadPlan(naechsteWoche, false);
@@ -129,7 +131,6 @@ public class MensaActivity extends ListActivity {
 	public void showDay(int day) {
 		// Im Titel den Tag anzeigen
 		currentDay = day;
-		setTitle(getNameOfDay(day) + ", " + mensa.getName());
 		menu.updateTitle(day);
 
 		// Liste mit Essen anzeigen.
@@ -169,32 +170,33 @@ public class MensaActivity extends ListActivity {
 	}
 
 	/**
+	 * Speichert die aktuelle Mensa.
+	 * @param mensa
+	 */
+	public void setMensa(Mensa mensa) {
+		this.mensa = mensa;
+		
+		// Speichern.
+		SharedPreferences pref = getPreferences(0);
+		Editor editor = pref.edit();
+		editor.putString("mensa", mensa.toString());
+		editor.commit();
+	}
+
+	/**
 	 * Stellt ein Standard-Android-Menü bereit, welches mittels Menütaste
 	 * erreichbar ist.
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		for (int i = today; i <= 7 + Calendar.FRIDAY; ++i) {
-			if (i % 7 > Calendar.SUNDAY) {
-				menu.add(1, i, i, getNameOfDay(i));
-			}
-		}
-
-		for (Mensa mensa : Mensa.values()) {
-			menu.add(2, mensa.hashCode(), 50, mensa.getName());
-		}
-		return true;
+		return this.menu.onCreateOptionsMenu(menu);
 	}
 
 	/**
 	 * Handler für das Anzeigen des Standard-Android-Menüs.
 	 */
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// Die Mensa verstecken, welche aktuell angezeigt wird.
-		for (Mensa mensa : Mensa.values()) {
-			menu.findItem(mensa.hashCode()).setVisible(this.mensa != mensa);
-		}
-		return true;
+		return this.menu.onPrepareOptionsMenu(menu);
 	}
 
 	/**
@@ -202,27 +204,7 @@ public class MensaActivity extends ListActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getGroupId()) {
-		case 1:
-			showDay(item.getItemId());
-			return true;
-		case 2:
-			for (Mensa mensa : Mensa.values()) {
-				if (item.getItemId() == mensa.hashCode()) {
-					this.mensa = mensa;
-					loadMensa(today > Calendar.FRIDAY);
-
-					// Speichern.
-					SharedPreferences pref = getPreferences(0);
-					Editor editor = pref.edit();
-					editor.putString("mensa", mensa.toString());
-					editor.commit();
-					break;
-				}
-			}
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		return menu.onOptionsItemSelected(item);
 	}
 
 	/**
