@@ -12,18 +12,19 @@ import android.text.format.DateUtils;
 public class OptionDay extends Option {
 	/** Der Tag */
 	private int day;
+	
+	private Calendar calendar;
 
 	/**
 	 * Konstruktor
+	 * 
 	 * @param day
 	 */
 	public OptionDay(int day) {
 		this.day = day;
-		text = activity.getNameOfDay(day);
-
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.DAY_OF_MONTH, day - activity.getToday());
-		subtext = DateUtils.formatDateTime(activity, c.getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR) + ", " + activity.getMensa().getName();
+		
+		calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_MONTH, day - activity.getToday());
 	}
 
 	/**
@@ -32,6 +33,56 @@ public class OptionDay extends Option {
 	@Override
 	public boolean onSelected() {
 		activity.showDay(day);
+		return true;
+	}
+
+	/**
+	 * Gibt den Namen des tages zurück.
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getText() {
+		return activity.getNameOfDay(day);
+	}
+
+	/**
+	 * Gibt das Datum des Tages und den Namen der Mensa zurück.
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getSubText() {
+		return DateUtils.formatDateTime(activity, calendar.getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR) + ", " + activity.getMensa().getName();
+	}
+
+	/**
+	 * Gibt einen kurzen Datums-String für das Dropdown-Menü zurück.
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDropdownText()
+	{
+		return DateUtils.formatDateTime(activity, calendar.getTimeInMillis(), DateUtils.FORMAT_ABBREV_MONTH);
+	}
+	
+	/**
+	 * Gibt den Tag zurück, der durch diese Option repräsentiert wird.
+	 * 
+	 * @return
+	 */
+	public int getDay() {
+		return day;
+	}
+
+	/**
+	 * Tage sind immer sichtbar.
+	 * 
+	 * @return true
+	 */
+	@Override
+	public boolean isVisible() {
 		return true;
 	}
 }

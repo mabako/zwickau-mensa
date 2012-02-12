@@ -24,7 +24,7 @@ public class MenuOld extends MenuHelper {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		for( int i = 0; i < options.size(); ++ i )
 		{
-			menu.add( Menu.NONE, i, i, options.get(i).text );
+			menu.add( Menu.NONE, i, i, options.get(i).getText() );
 		}
 		return true;
 	}
@@ -34,13 +34,10 @@ public class MenuOld extends MenuHelper {
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// Die Mensa verstecken, welche aktuell angezeigt wird.
-		//TODO fix, aber nicht hier.
-		/*
-		for (Mensa mensa : Mensa.values()) {
-			menu.findItem(mensa.hashCode()).setVisible(activity.getMensa() != mensa);
+		for( int i = 0; i < menu.size(); ++ i )
+		{
+			menu.getItem(i).setVisible(options.get(i).isVisible());
 		}
-		*/
 		return true;
 	}
 

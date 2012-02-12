@@ -23,11 +23,17 @@ public class MenuICS extends MenuHelper {
 	 */
 	public MenuICS() {
 		actionBar = activity.getActionBar();
+
+		// Keinen Titel anzeigen
+		actionBar.setDisplayShowTitleEnabled(false);
+
+		// Liste einrichten
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		Adapter adapter = new Adapter();
 		Callback callback = new Callback();
 		actionBar.setListNavigationCallbacks(adapter, callback);
+		actionBar.setSelectedNavigationItem(findCurrentDay());
 	}
 
 	private class Adapter extends BaseAdapter {
@@ -43,24 +49,82 @@ public class MenuICS extends MenuHelper {
 			return position;
 		}
 
+		/**
+		 * Versucht, den angegeben View wiederzuverwenden. Spart Speicher,
+		 * bringt Performance.
+		 * 
+		 * @param view
+		 * @param resource
+		 * @param parent
+		 * @return
+		 */
+		private View getRecycledView(View view, int resource, ViewGroup parent) {
+			if (view == null || view.getId() != resource)
+				return activity.getLayoutInflater().inflate(resource, parent, false);
+			else
+				return view;
+		}
+
+		/**
+		 * Hauptview, falls dieses Item in der ActionBar gezeigt wird.
+		 */
 		public View getView(int position, View convertView, ViewGroup parent) {
-			View child = activity.getLayoutInflater().inflate(R.layout.spinner, parent, false);
+			View child = getRecycledView(convertView, R.layout.actionbar, parent);
 
 			TextView text = (TextView) child.findViewById(R.id.actionbar_text);
-			text.setText(getItem(position).text);
+			text.setText(getItem(position).getText());
 
 			TextView subtext = (TextView) child.findViewById(R.id.actionbar_subtext);
-			subtext.setText(getItem(position).subtext);
+			String subtextStr = getItem(position).getSubText();
+			subtext.setText(subtextStr == null ? "" : subtextStr);
 
 			return child;
 		}
 
+		/**
+		 * Dropdown-View, ist ähnlich dem normalen (Haupt-)View, jedoch ist das
+		 * Datum abgekürzt.
+		 */
+		@Override
+		public View getDropDownView(int position, View convertView, ViewGroup parent) {
+			View child = getRecycledView(convertView, R.layout.actionbar_dropdown, parent);
+
+			TextView text = (TextView) child.findViewById(R.id.actionbar_text);
+			text.setText(getItem(position).getText());
+
+			TextView subtext = (TextView) child.findViewById(R.id.actionbar_subtext);
+			String subtextStr = getItem(position).getDropdownText();
+			subtext.setText(subtextStr == null ? "" : subtextStr);
+
+			return child;
+		}
 	}
 
 	private class Callback implements ActionBar.OnNavigationListener {
 		public boolean onNavigationItemSelected(int position, long itemId) {
-			options.get(position).onSelected();
+			// Kann man die Option auswählen (Mensa gibt hier 'false' zurück)?
+			if (!options.get(position).onSelected()) {
+
+				actionBar.setSelectedNavigationItem(findCurrentDay());
+			}
 			return true;
 		}
+	}
+
+	/**
+	 * Liefert die Position des aktuellen Tages zurück.
+	 * 
+	 * @return
+	 */
+	private int findCurrentDay() {
+		for (int i = 0; i < options.size(); ++i) {
+			Option option = options.get(i);
+			if (option instanceof OptionDay) {
+				if (((OptionDay) option).getDay() == activity.getCurrentDay()) {
+					return i;
+				}
+			}
+		}
+		return 0;
 	}
 }
