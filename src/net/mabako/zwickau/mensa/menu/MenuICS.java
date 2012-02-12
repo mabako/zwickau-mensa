@@ -1,5 +1,8 @@
 package net.mabako.zwickau.mensa.menu;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import net.mabako.zwickau.mensa.R;
 import android.app.ActionBar;
 import android.view.View;
@@ -36,13 +39,28 @@ public class MenuICS extends MenuHelper {
 		actionBar.setSelectedNavigationItem(findCurrentDay());
 	}
 
+	/**
+	 * Gibt alle sichtbaren Optionen zurück.
+	 * 
+	 * @return Liste aller sichtbaren Optionen.
+	 */
+	private List<Option> getVisibleOptions() {
+		List<Option> visibleOptions = new LinkedList<Option>();
+		for (Option o : options) {
+			if (o.isVisible()) {
+				visibleOptions.add(o);
+			}
+		}
+		return visibleOptions;
+	}
+
 	private class Adapter extends BaseAdapter {
 		public int getCount() {
-			return options.size();
+			return getVisibleOptions().size();
 		}
 
 		public Option getItem(int position) {
-			return options.get(position);
+			return getVisibleOptions().get(position);
 		}
 
 		public long getItemId(int position) {
@@ -99,11 +117,11 @@ public class MenuICS extends MenuHelper {
 			return child;
 		}
 	}
-
+	
 	private class Callback implements ActionBar.OnNavigationListener {
 		public boolean onNavigationItemSelected(int position, long itemId) {
 			// Kann man die Option auswählen (Mensa gibt hier 'false' zurück)?
-			if (!options.get(position).onSelected()) {
+			if (!getVisibleOptions().get(position).onSelected()) {
 
 				actionBar.setSelectedNavigationItem(findCurrentDay());
 			}
@@ -117,8 +135,8 @@ public class MenuICS extends MenuHelper {
 	 * @return
 	 */
 	private int findCurrentDay() {
-		for (int i = 0; i < options.size(); ++i) {
-			Option option = options.get(i);
+		for (int i = 0; i < getVisibleOptions().size(); ++i) {
+			Option option = getVisibleOptions().get(i);
 			if (option instanceof OptionDay) {
 				if (((OptionDay) option).getDay() == activity.getCurrentDay()) {
 					return i;
