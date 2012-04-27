@@ -8,8 +8,9 @@ import java.util.Calendar;
  * @author Marcus Bauer (mabako@gmail.com)
  */
 public enum Mensa {
-	RING("Mensa Ring", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Ring.php", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Ring_nextweek.php?"),
-	SCHEFFELBERG("Scheffelberg", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Scheffelberg.php", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Scheffelberg_nextweek.php");
+	RING("Mensa Ring", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Ring.php", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Ring_nextweek.php?");
+	// Plan für Scheffelberg gibt es momentan nur als PDF (Zelt-Mensa usw.)
+	//SCHEFFELBERG("Scheffelberg", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Scheffelberg.php", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Scheffelberg_nextweek.php");
 
 	/** Name der Mensa */
 	private String name;
