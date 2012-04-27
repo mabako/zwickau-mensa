@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Mensa</string>
+    <string name="app_name">Mensa Zwickau</string>
     <string name="desc">FH Zwickau - Mensa-App</string>
     <string name="loading_main">Lädt lecker Essen…</string>
     <string name="info">Info</string>
