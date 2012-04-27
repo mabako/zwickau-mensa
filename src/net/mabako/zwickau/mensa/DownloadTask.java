@@ -22,15 +22,15 @@ import android.os.AsyncTask;
  * 
  * @author Marcus Bauer (mabako@gmail.com)
  */
-public class MensaTask extends AsyncTask<Void, Void, Void> {
+public class DownloadTask extends AsyncTask<Void, Void, Void> {
 	/** Encoding der Mensa-Seiten. */
 	private static final String ENCODING = "windows-1252";
 
 	/** Bitte warten-Dialog */
-	ProgressDialog progressDialog;
+	private ProgressDialog progressDialog;
 
 	/** Holt dieser Task den Fraß dieser Woche oder der nächsten Woche? */
-	boolean naechsteWoche = false;
+	private boolean naechsteWoche = false;
 
 	/** Im Hintergrund? Falls ja wird kein Fortschrittsdialog angezeigt. */
 	private boolean background = false;
@@ -50,7 +50,7 @@ public class MensaTask extends AsyncTask<Void, Void, Void> {
 	 *            falls <code>true</code>, wird kein Fortschrittsdialog
 	 *            angezeigt.
 	 */
-	public MensaTask(Mensa mensa, boolean naechsteWoche, boolean background) {
+	public DownloadTask(Mensa mensa, boolean naechsteWoche, boolean background) {
 		this.mensa = mensa;
 		this.naechsteWoche = naechsteWoche;
 		this.background = background;
