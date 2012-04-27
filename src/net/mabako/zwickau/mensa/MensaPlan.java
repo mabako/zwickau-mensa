@@ -34,6 +34,7 @@ public class MensaPlan extends HashMap<Integer, List<Essen>> {
 	public void parse(String htmlSource, boolean naechsteWoche) {
 		// Angebote mit Tagespreis filtenr.
 		Pattern tagespreis = Pattern.compile("( zum Tagespreis)", Pattern.CASE_INSENSITIVE);
+		Pattern feiertag = Pattern.compile("(Feiertag)", Pattern.CASE_INSENSITIVE);
 		
 		// Wir versuchen, Hauptessen X, Name des Gerichts und eventuell den
 		// Preis auszulesen.
@@ -62,6 +63,13 @@ public class MensaPlan extends HashMap<Integer, List<Essen>> {
 				{
 					was = tagespreisMatcher.replaceAll("");
 					geld = ", Tagespreis";
+				}
+				
+				if (feiertag.matcher(was).find() || feiertag.matcher(titel).matches())
+				{
+					was = "Feiertag";
+					titel = "-";
+					geld = "";
 				}
 
 				essen.add(new Essen(was, titel + geld));
