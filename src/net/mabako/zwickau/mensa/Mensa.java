@@ -8,7 +8,8 @@ import java.util.Calendar;
  * @author Marcus Bauer (mabako@gmail.com)
  */
 public enum Mensa {
-	RING("Mensa Ring", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Ring.php", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Ring_nextweek.php?"), SCHEFFELBERG("Scheffelberg", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Scheffelberg.php", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Scheffelberg_nextweek.php");
+	RING("Mensa Ring", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Ring.php", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Ring_nextweek.php?"),
+	SCHEFFELBERG("Scheffelberg", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Scheffelberg.php", "http://www.tu-chemnitz.de/stuwe/speiseplan_public/web/web_Scheffelberg_nextweek.php");
 
 	/** Name der Mensa */
 	private String name;
@@ -23,10 +24,11 @@ public enum Mensa {
 	private MensaPlan plan;
 
 	/**
+	 * Erstellt eine Mensa mit leerem Plan.
 	 * 
-	 * @param name
-	 * @param current
-	 * @param next
+	 * @param name Name der Mensa
+	 * @param current Web-Addresse für aktuellen Plan
+	 * @param next Web-Adresse für Plan der nächsten Woche
 	 */
 	private Mensa(String name, String current, String next) {
 		this.name = name;
@@ -39,8 +41,8 @@ public enum Mensa {
 	/**
 	 * Liefert die URL der Mensawebseite zurück.
 	 * 
-	 * @param naechsteWoche
-	 * @return
+	 * @param naechsteWoche ob die URL für nächste Woche zurückgegeben werden soll.
+	 * @return Web-Addresse zur Abfrage des Planes.
 	 */
 	public String getURL(boolean naechsteWoche) {
 		if (naechsteWoche) {
@@ -65,6 +67,8 @@ public enum Mensa {
 
 	/**
 	 * Liefert den Namen der Mensa.
+	 * 
+	 * @return Name der Mensa
 	 */
 	public String getName() {
 		return name;
@@ -72,6 +76,8 @@ public enum Mensa {
 	
 	/**
 	 * Liefert den Speiseplan.
+	 * 
+	 * @return Speiseplan
 	 */
 	public MensaPlan getPlan() {
 		return plan;
@@ -83,7 +89,10 @@ public enum Mensa {
 	 *         Essen gibt.
 	 */
 	public boolean hasAnyFood(boolean naechsteWoche) {
+		// Offset in Tagen
 		int start = naechsteWoche ? 7 : 0;
+		
+		// Alle Tage durchlaufen
 		for (int i = start; i < start + 7; ++i) {
 			if (plan.get(i) != null && plan.get(i).size() > 0) {
 				return true;

@@ -35,6 +35,8 @@ public class MensaActivity extends ListActivity {
 
 	/**
 	 * Berechnet den heutigen Tag, erstellt das Menü und lädt den Speiseplan.
+	 * 
+	 * @param savedInstanceState
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class MensaActivity extends ListActivity {
 
 		instance = this;
 
-		// Falls irgendwas gespeichert
+		// Gespeicherte Mensa (d.h. zuletzt aufgerufene) laden
 		SharedPreferences pref = getPreferences(0);
 		String m = pref.getString("mensa", null);
 		if (m != null) {
@@ -71,14 +73,15 @@ public class MensaActivity extends ListActivity {
 		if (menu == null) {
 			menu = MenuHelper.getInstance();
 		}
-
+		
+		// Den Plan der aktuellen Mensa laden.
 		loadMensa(naechsteWoche);
 	}
 
 	/**
 	 * Lädt die Mensa bzw. den Plan.
 	 * 
-	 * @param naechsteWoche
+	 * @param naechsteWoche ob der Plan für nächste Woche geladen werden soll
 	 */
 	public void loadMensa(boolean naechsteWoche) {
 		if (!mensa.hasAnyFood(naechsteWoche)) {
@@ -91,22 +94,22 @@ public class MensaActivity extends ListActivity {
 	}
 
 	/**
-	 * Liefert diese Activity zurück.
+	 * Liefert diese Activity-Instanz zurück.
 	 * 
-	 * @return
+	 * @return die Instanz
 	 */
 	public static MensaActivity getInstance() {
 		return instance;
 	}
 
 	/**
-	 * Lädt einen Mensaplan
+	 * Lädt einen Mensaplan.
 	 * 
-	 * @param naechsteWoche
-	 * @param background
+	 * @param naechsteWoche ob der Plan für nächste Woche geladen werden soll
+	 * @param background ob im Hintergrund geladen wird, bei <code>false</code> wird ein Dialogfeld angezeigt.
 	 */
 	private void loadPlan(boolean naechsteWoche, boolean background) {
-		new MensaTask(mensa, naechsteWoche, background).execute();
+		new DownloadTask(mensa, naechsteWoche, background).execute();
 	}
 
 	/**
@@ -155,6 +158,7 @@ public class MensaActivity extends ListActivity {
 	 * Gibt den zurzeit angezeigten Tag zurück.
 	 * 
 	 * @see MensaActivity#getToday()
+	 * @return zurzeit angezeigter Tag
 	 */
 	public int getCurrentDay() {
 		return currentDay;
@@ -163,15 +167,16 @@ public class MensaActivity extends ListActivity {
 	/**
 	 * Liefert die aktuelle Mensa zurück.
 	 * 
-	 * @return
+	 * @return aktuelle Mensa
 	 */
 	public Mensa getMensa() {
 		return instance.mensa;
 	}
 
 	/**
-	 * Speichert die aktuelle Mensa.
-	 * @param mensa
+	 * Speichert die Mensa.
+	 * 
+	 * @param mensa zu setzende Mensa.
 	 */
 	public void setMensa(Mensa mensa) {
 		this.mensa = mensa;
