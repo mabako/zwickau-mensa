@@ -4,12 +4,17 @@ import java.util.Calendar;
 import java.util.List;
 
 import net.mabako.zwickau.mensa.menu.MenuHelper;
-import android.app.ListActivity;
+import net.robotmedia.billing.BillingController;
+import net.robotmedia.billing.BillingRequest.ResponseCode;
+import net.robotmedia.billing.helper.AbstractBillingObserver;
+import net.robotmedia.billing.model.Transaction.PurchaseState;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 /**
@@ -17,7 +22,7 @@ import android.widget.SimpleAdapter;
  * 
  * @author Marcus Bauer (mabako@gmail.com)
  */
-public class MensaActivity extends ListActivity {
+public class MensaActivity extends Activity {
 	/** Instanz dieser Aktivität. */
 	private static MensaActivity instance;
 
@@ -32,7 +37,17 @@ public class MensaActivity extends ListActivity {
 
 	/** Menü */
 	private MenuHelper menu;
+	
+	/** Liste mit Essen */
+	private ListView view;
+	
+	/** Hat der Benutzer gespendet? */
+	private boolean donated = false;
+	
+	AbstractBillingObserver billingObserver;
 
+	public final static String DONATE = "net.mabako.zwickau.mensa.donate";
+	
 	/**
 	 * Berechnet den heutigen Tag, erstellt das Menü und lädt den Speiseplan.
 	 * 
@@ -43,6 +58,8 @@ public class MensaActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		instance = this;
+		view = new ListView(this);
+		setContentView(view);
 
 		// Gespeicherte Mensa (d.h. zuletzt aufgerufene) laden
 		SharedPreferences pref = getPreferences(0);
@@ -76,8 +93,48 @@ public class MensaActivity extends ListActivity {
 		
 		// Den Plan der aktuellen Mensa laden.
 		loadMensa(naechsteWoche);
+		
+		// In-App-Billing
+		setupBilling();
+	}
+	
+	/**
+	 * In-App-Billing
+	 */
+	private void setupBilling() {
+		BillingController.setDebug(true);
+		BillingController.setConfiguration(new BillingConfiguration());
+		BillingController.checkBillingSupported(this);
+		
+		billingObserver = new AbstractBillingObserver(this) {			
+			public void onRequestPurchaseResponse(String itemId, ResponseCode response) {
+				if(itemId.equals(DONATE))
+					setDonated(response == ResponseCode.RESULT_OK);
+			}
+			
+			public void onPurchaseStateChanged(String itemId, PurchaseState state) {
+				if(itemId.equals(DONATE))
+					setDonated(state == PurchaseState.PURCHASED);
+			}
+			
+			public void onBillingChecked(boolean supported) {
+			}
+		};
+		BillingController.registerObserver(billingObserver);
+		
+		if (!billingObserver.isTransactionsRestored())
+			BillingController.restoreTransactions(this);
 	}
 
+	/**
+	 * Wird gelöscht.
+	 */
+	@Override
+	protected void onDestroy() {
+		BillingController.unregisterObserver(billingObserver);
+		super.onDestroy();
+	}
+	
 	/**
 	 * Lädt die Mensa bzw. den Plan.
 	 * 
@@ -139,7 +196,7 @@ public class MensaActivity extends ListActivity {
 		// Liste mit Essen anzeigen.
 		List<Essen> essen = mensa.getPlan().get(day);
 		SimpleAdapter adapter = new SimpleAdapter(this, essen, android.R.layout.simple_list_item_2, new String[] { Essen.TEXT, Essen.TEXT2 }, new int[] { android.R.id.text1, android.R.id.text2 });
-		setListAdapter(adapter);
+		view.setAdapter(adapter);
 	}
 
 	/**
@@ -227,5 +284,17 @@ public class MensaActivity extends ListActivity {
 			return MensaActivity.getInstance().getString(R.string.today);
 		else
 			return MensaActivity.getInstance().getResources().getStringArray(R.array.daysOfWeek)[day];
+	}
+	
+	/**
+	 * Setzt donated-Flag
+	 * @param donated
+	 */
+	protected void setDonated(boolean donated) {
+		this.donated = donated;
+	}
+	
+	public boolean hasDonated() {
+		return donated;
 	}
 }

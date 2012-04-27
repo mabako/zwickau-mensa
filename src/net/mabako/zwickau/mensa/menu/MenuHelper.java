@@ -50,6 +50,8 @@ public abstract class MenuHelper {
 		for (Mensa mensa : Mensa.values()) {
 			options.add(new OptionMensa(mensa));
 		}
+		
+		options.add(new OptionDonate());
 	}
 
 	/**
@@ -58,15 +60,10 @@ public abstract class MenuHelper {
 	 * @return Liste aller auswählbarer Tage.
 	 */
 	private final List<Integer> getSelectableDays() {
-		int maximum = 3;
 		List<Integer> days = new LinkedList<Integer>();
 		for (int i = activity.getToday(); i <= 7 + Calendar.FRIDAY; ++i) {
 			if (i % 7 > Calendar.SUNDAY) {
 				days.add(i);
-				
-				// Höchstzahl an Tagen, die ausgewählt werden kann.
-				if( --maximum <= 0 )
-					break;
 			}
 		}
 		return days;

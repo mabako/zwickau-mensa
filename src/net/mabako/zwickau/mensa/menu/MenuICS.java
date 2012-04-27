@@ -46,8 +46,9 @@ public class MenuICS extends MenuHelper {
 	 */
 	private List<Option> getVisibleOptions() {
 		List<Option> visibleOptions = new LinkedList<Option>();
+		int i = 0;
 		for (Option o : options) {
-			if (o.isVisible()) {
+			if (o.isVisible(i++)) {
 				visibleOptions.add(o);
 			}
 		}

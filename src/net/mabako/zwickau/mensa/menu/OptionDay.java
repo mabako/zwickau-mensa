@@ -2,6 +2,8 @@ package net.mabako.zwickau.mensa.menu;
 
 import java.util.Calendar;
 
+import net.mabako.zwickau.mensa.MensaActivity;
+
 import android.text.format.DateUtils;
 
 /**
@@ -77,12 +79,15 @@ public class OptionDay extends Option {
 	}
 
 	/**
-	 * Tage sind immer sichtbar.
+	 * Tage sind immer sichtbar, wenn man gespendet hat, sonst nur 3 Tage in die Zukunft.
 	 * 
-	 * @return true
+	 * @param count
+	 * @return
 	 */
 	@Override
-	public boolean isVisible() {
+	public boolean isVisible(int count) {
+		if(!MensaActivity.getInstance().hasDonated())
+			return count < 3;
 		return true;
 	}
 }
