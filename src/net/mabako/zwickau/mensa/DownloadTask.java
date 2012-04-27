@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Random;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -64,8 +62,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
 	protected void onPreExecute() {
 		// Dialog zum Warten zeigen.
 		if (!background) {
-			String[] messages = MensaActivity.getInstance().getResources().getStringArray(R.array.loading);
-			progressDialog = ProgressDialog.show(MensaActivity.getInstance(), "", MensaActivity.getInstance().getString(R.string.loading_main) + "\n" + messages[new Random().nextInt(messages.length)], true);
+			progressDialog = ProgressDialog.show(MensaActivity.getInstance(), "", MensaActivity.getInstance().getString(R.string.loading_main), true);
 		}
 	}
 

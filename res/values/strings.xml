@@ -4,9 +4,5 @@
     <string name="app_name">Mensa Zwickau</string>
     <string name="desc">FH Zwickau - Mensa-App</string>
     <string name="loading_main">Lädt lecker Essen…</string>
-    <string name="info">Info</string>
-    <string name="info_title">Mensa</string>
-    <string name="info_str">Ein kleines App, um dem Mensa-Speiseplan der FH Zwickau anzuzeigen.\n\nUnd wenn es dir gefällt, einfach mal ein Essen ausgeben :) - Marcus Bauer.</string>
-    <string name="contact">Kontakt</string>
 
 </resources>

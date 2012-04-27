@@ -50,8 +50,6 @@ public abstract class MenuHelper {
 		for (Mensa mensa : Mensa.values()) {
 			options.add(new OptionMensa(mensa));
 		}
-		
-		options.add(new OptionInfo());
 	}
 
 	/**
