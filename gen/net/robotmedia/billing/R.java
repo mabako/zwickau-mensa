@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package net.mabako.zwickau.mensa;
+package net.robotmedia.billing;
 
 public final class R {
     public static final class array {

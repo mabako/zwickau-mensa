@@ -36,7 +36,7 @@ public class MenuOld extends MenuHelper {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		for( int i = 0; i < menu.size(); ++ i )
 		{
-			menu.getItem(i).setVisible(options.get(i).isVisible());
+			menu.getItem(i).setVisible(options.get(i).isVisible(i));
 		}
 		return true;
 	}

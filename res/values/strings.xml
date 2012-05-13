@@ -4,5 +4,7 @@
     <string name="app_name">Mensa Zwickau</string>
     <string name="desc">FH Zwickau - Mensa-App</string>
     <string name="loading_main">Lädt lecker Essen…</string>
+    <string name="donate">Spenden</string>
+    <string name="donate_thanks">Vielen Dank für ihre Spende.</string>
 
 </resources>

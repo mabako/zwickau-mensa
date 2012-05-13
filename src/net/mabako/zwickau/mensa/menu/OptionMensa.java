@@ -50,7 +50,7 @@ public class OptionMensa extends Option {
 	 * @return
 	 */
 	@Override
-	public boolean isVisible() {
+	public boolean isVisible(int count) {
 		return mensa != activity.getMensa();
 	}
 }

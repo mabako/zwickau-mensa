@@ -41,5 +41,5 @@ abstract class Option {
 	 * 
 	 * @return
 	 */
-	public abstract boolean isVisible();
+	public abstract boolean isVisible(int count);
 }
