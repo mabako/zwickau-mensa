@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="Theme" parent="@android:style/Theme.Holo">
+        <item name="vpiTitlePageIndicatorStyle">@style/TitlePageIndicator</item>
+    </style>
+
+    <style name="TitlePageIndicator">
+        <item name="footerColor">#ffdddddd</item>
+    </style>
+
+</resources>

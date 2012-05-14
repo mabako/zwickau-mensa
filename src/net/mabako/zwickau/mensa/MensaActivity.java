@@ -175,6 +175,7 @@ public class MensaActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		BillingController.unregisterObserver(billingObserver);
+		db.close();
 		super.onDestroy();
 	}
 

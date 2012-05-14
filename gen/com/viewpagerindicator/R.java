@@ -333,8 +333,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int today=0x7f0a0002;
     }
     public static final class style {
+        public static final int ActionBar=0x7f090009;
         public static final int TextAppearance_TabPageIndicator=0x7f090006;
+        public static final int Theme=0x7f090007;
         public static final int Theme_PageIndicatorDefaults=0x7f090000;
+        public static final int TitlePageIndicator=0x7f090008;
         public static final int Widget=0x7f090001;
         public static final int Widget_CirclePageIndicator=0x7f090002;
         public static final int Widget_TabPageIndicator=0x7f090004;
