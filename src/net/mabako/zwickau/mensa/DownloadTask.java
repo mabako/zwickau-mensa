@@ -80,6 +80,9 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
 
 			// In den Plan einfügen.
 			mensa.getPlan().parse(responseText, naechsteWoche);
+			
+			// In Datenbank speichern
+			MensaActivity.getInstance().db.savePlan(mensa, naechsteWoche);
 		} catch (Exception e) {
 		}
 		return null;

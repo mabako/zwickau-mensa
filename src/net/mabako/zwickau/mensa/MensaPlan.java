@@ -44,7 +44,7 @@ public class MensaPlan extends HashMap<Integer, List<Essen>> {
 		int tabellenEintrag = 0;
 		while (m.find()) {
 			// Pro Tag abspeichern -> erstmal die Tagesliste auslesen
-			List<Essen> essen = get(Calendar.MONDAY + (tabellenEintrag % 5 ) + (naechsteWoche ? 7 : 0));
+			List<Essen> essen = get(Calendar.MONDAY + (tabellenEintrag % 5) + (naechsteWoche ? 7 : 0));
 
 			// Falls kein Titel wie Hauptessen 1 da ist, gibt es auch kein
 			// Essen.

@@ -44,6 +44,9 @@ public class MensaActivity extends Activity {
 	/** Hat der Benutzer gespendet? */
 	private boolean donated = false;
 	
+	/** Datenbank-Helfer */
+	DatabaseHandler db = new DatabaseHandler(this);
+	
 	AbstractBillingObserver billingObserver;
 
 	public final static String DONATE = "net.mabako.zwickau.mensa.donate";
@@ -70,6 +73,9 @@ public class MensaActivity extends Activity {
 			} catch (IllegalArgumentException e) {
 			}
 		}
+		
+		// Alte Daten löschen
+		db.deleteOldFood();
 
 		// Tag ausrechnen, der angezeigt werden soll.
 		today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -166,7 +172,11 @@ public class MensaActivity extends Activity {
 	 * @param background ob im Hintergrund geladen wird, bei <code>false</code> wird ein Dialogfeld angezeigt.
 	 */
 	private void loadPlan(boolean naechsteWoche, boolean background) {
-		new DownloadTask(mensa, naechsteWoche, background).execute();
+		// Aus der Datenbank laden, sofern möglich
+		if(db.loadPlan(mensa, naechsteWoche))
+			update(naechsteWoche);
+		else
+			new DownloadTask(mensa, naechsteWoche, background).execute();
 	}
 
 	/**
