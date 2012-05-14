@@ -1,5 +1,6 @@
 package net.mabako.zwickau.mensa.menu;
 
+import net.mabako.zwickau.mensa.Mensa;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,8 +14,8 @@ public class MenuOld extends MenuHelper {
 	 * Aktualisiert den Titel der Anwendung
 	 */
 	@Override
-	public void updateTitle(int day) {
-		activity.setTitle(activity.getNameOfDay(day) + ", " + activity.getMensa().getName());
+	public void updateTitle(Mensa mensa) {
+		activity.setTitle(mensa.getName());
 	}
 
 	/**

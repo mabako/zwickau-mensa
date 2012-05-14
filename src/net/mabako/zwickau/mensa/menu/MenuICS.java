@@ -36,7 +36,7 @@ public class MenuICS extends MenuHelper {
 		Adapter adapter = new Adapter();
 		Callback callback = new Callback();
 		actionBar.setListNavigationCallbacks(adapter, callback);
-		actionBar.setSelectedNavigationItem(findCurrentDay());
+		actionBar.setSelectedNavigationItem(findCurrentMensa());
 	}
 
 	/**
@@ -93,10 +93,6 @@ public class MenuICS extends MenuHelper {
 			TextView text = (TextView) child.findViewById(R.id.actionbar_text);
 			text.setText(getItem(position).getText());
 
-			TextView subtext = (TextView) child.findViewById(R.id.actionbar_subtext);
-			String subtextStr = getItem(position).getSubText();
-			subtext.setText(subtextStr == null ? "" : subtextStr);
-
 			return child;
 		}
 
@@ -111,10 +107,6 @@ public class MenuICS extends MenuHelper {
 			TextView text = (TextView) child.findViewById(R.id.actionbar_text);
 			text.setText(getItem(position).getText());
 
-			TextView subtext = (TextView) child.findViewById(R.id.actionbar_subtext);
-			String subtextStr = getItem(position).getDropdownText();
-			subtext.setText(subtextStr == null ? "" : subtextStr);
-
 			return child;
 		}
 	}
@@ -123,8 +115,7 @@ public class MenuICS extends MenuHelper {
 		public boolean onNavigationItemSelected(int position, long itemId) {
 			// Kann man die Option auswählen (Mensa gibt hier 'false' zurück)?
 			if (!getVisibleOptions().get(position).onSelected()) {
-
-				actionBar.setSelectedNavigationItem(findCurrentDay());
+				actionBar.setSelectedNavigationItem(findCurrentMensa());
 			}
 			return true;
 		}
@@ -135,11 +126,11 @@ public class MenuICS extends MenuHelper {
 	 * 
 	 * @return
 	 */
-	private int findCurrentDay() {
+	private int findCurrentMensa() {
 		for (int i = 0; i < getVisibleOptions().size(); ++i) {
 			Option option = getVisibleOptions().get(i);
-			if (option instanceof OptionDay) {
-				if (((OptionDay) option).getDay() == activity.getCurrentDay()) {
+			if (option instanceof OptionMensa) {
+				if (((OptionMensa)option).getMensa() == activity.getMensa()) {
 					return i;
 				}
 			}

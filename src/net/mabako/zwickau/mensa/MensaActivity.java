@@ -3,6 +3,8 @@
 import java.util.Calendar;
 import java.util.List;
 
+import com.viewpagerindicator.TitlePageIndicator;
+
 import net.mabako.zwickau.mensa.menu.MenuHelper;
 import net.robotmedia.billing.BillingController;
 import net.robotmedia.billing.BillingRequest.ResponseCode;
@@ -12,9 +14,11 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SimpleAdapter;
 
 /**
@@ -37,20 +41,20 @@ public class MensaActivity extends Activity {
 
 	/** Menü */
 	private MenuHelper menu;
-	
-	/** Liste mit Essen */
-	private ListView view;
-	
+
 	/** Hat der Benutzer gespendet? */
 	private boolean donated = false;
-	
+
 	/** Datenbank-Helfer */
 	DatabaseHandler db = new DatabaseHandler(this);
-	
+
 	AbstractBillingObserver billingObserver;
 
 	public final static String DONATE = "net.mabako.zwickau.mensa.donate";
-	
+
+	/** alle Views */
+	MensaPagerAdapter pagerAdapter;
+
 	/**
 	 * Berechnet den heutigen Tag, erstellt das Menü und lädt den Speiseplan.
 	 * 
@@ -61,8 +65,6 @@ public class MensaActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		instance = this;
-		view = new ListView(this);
-		setContentView(view);
 
 		// Gespeicherte Mensa (d.h. zuletzt aufgerufene) laden
 		SharedPreferences pref = getPreferences(0);
@@ -73,11 +75,73 @@ public class MensaActivity extends Activity {
 			} catch (IllegalArgumentException e) {
 			}
 		}
-		
+
 		// Alte Daten löschen
 		db.deleteOldFood();
 
-		// Tag ausrechnen, der angezeigt werden soll.
+		// Menü erstellen.
+		if (menu == null) {
+			menu = MenuHelper.getInstance();
+		}
+		menu.updateTitle(mensa);
+
+		// Den Plan der aktuellen Mensa laden.
+		loadMensa(isNextWeek());
+
+		// In-App-Billing
+		setupBilling();
+	}
+
+	/**
+	 * In-App-Billing
+	 */
+	private void setupBilling() {
+		BillingController.setDebug(true);
+		BillingController.setConfiguration(new BillingConfiguration());
+		BillingController.checkBillingSupported(this);
+
+		billingObserver = new AbstractBillingObserver(this) {
+			public void onRequestPurchaseResponse(String itemId,
+					ResponseCode response) {
+				if (itemId.equals(DONATE))
+					setDonated(response == ResponseCode.RESULT_OK);
+			}
+
+			public void onPurchaseStateChanged(String itemId,
+					PurchaseState state) {
+				if (itemId.equals(DONATE))
+					setDonated(state == PurchaseState.PURCHASED);
+			}
+
+			public void onBillingChecked(boolean supported) {
+			}
+		};
+		BillingController.registerObserver(billingObserver);
+
+		if (!billingObserver.isTransactionsRestored())
+			BillingController.restoreTransactions(this);
+	}
+
+	/**
+	 * Seiten initialisieren
+	 */
+	private void initializePages() {
+		setContentView(R.layout.main);
+		pagerAdapter = new MensaPagerAdapter();
+		ViewPager pager = (ViewPager) findViewById(R.id.pager);
+		pager.setAdapter(pagerAdapter);
+		pager.setOnPageChangeListener(pagerAdapter);
+
+		TitlePageIndicator titleIndicator = (TitlePageIndicator) findViewById(R.id.titles);
+		titleIndicator.setViewPager(pager);
+	}
+
+	/**
+	 * Gibt zurück, ob der Plan für diese oder die nächste Woche auszugeben ist.
+	 * 
+	 * @return
+	 */
+	private boolean isNextWeek() {
 		today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 		boolean naechsteWoche = false;
 		if (today == Calendar.SATURDAY || today == Calendar.SUNDAY) {
@@ -92,44 +156,17 @@ public class MensaActivity extends Activity {
 		} else
 			currentDay = today;
 
-		// Menü erstellen.
-		if (menu == null) {
-			menu = MenuHelper.getInstance();
-		}
-		
-		// Den Plan der aktuellen Mensa laden.
-		loadMensa(naechsteWoche);
-		
-		// In-App-Billing
-		setupBilling();
+		return naechsteWoche;
 	}
-	
-	/**
-	 * In-App-Billing
-	 */
-	private void setupBilling() {
-		BillingController.setDebug(true);
-		BillingController.setConfiguration(new BillingConfiguration());
-		BillingController.checkBillingSupported(this);
-		
-		billingObserver = new AbstractBillingObserver(this) {			
-			public void onRequestPurchaseResponse(String itemId, ResponseCode response) {
-				if(itemId.equals(DONATE))
-					setDonated(response == ResponseCode.RESULT_OK);
+
+	private void initializeReloadButton() {
+		setContentView(R.layout.reload);
+		Button reload = (Button) findViewById(R.id.reload_button);
+		reload.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				loadMensa(isNextWeek());
 			}
-			
-			public void onPurchaseStateChanged(String itemId, PurchaseState state) {
-				if(itemId.equals(DONATE))
-					setDonated(state == PurchaseState.PURCHASED);
-			}
-			
-			public void onBillingChecked(boolean supported) {
-			}
-		};
-		BillingController.registerObserver(billingObserver);
-		
-		if (!billingObserver.isTransactionsRestored())
-			BillingController.restoreTransactions(this);
+		});
 	}
 
 	/**
@@ -140,11 +177,12 @@ public class MensaActivity extends Activity {
 		BillingController.unregisterObserver(billingObserver);
 		super.onDestroy();
 	}
-	
+
 	/**
 	 * Lädt die Mensa bzw. den Plan.
 	 * 
-	 * @param naechsteWoche ob der Plan für nächste Woche geladen werden soll
+	 * @param naechsteWoche
+	 *            ob der Plan für nächste Woche geladen werden soll
 	 */
 	public void loadMensa(boolean naechsteWoche) {
 		if (!mensa.hasAnyFood(naechsteWoche)) {
@@ -168,12 +206,15 @@ public class MensaActivity extends Activity {
 	/**
 	 * Lädt einen Mensaplan.
 	 * 
-	 * @param naechsteWoche ob der Plan für nächste Woche geladen werden soll
-	 * @param background ob im Hintergrund geladen wird, bei <code>false</code> wird ein Dialogfeld angezeigt.
+	 * @param naechsteWoche
+	 *            ob der Plan für nächste Woche geladen werden soll
+	 * @param background
+	 *            ob im Hintergrund geladen wird, bei <code>false</code> wird
+	 *            ein Dialogfeld angezeigt.
 	 */
 	private void loadPlan(boolean naechsteWoche, boolean background) {
 		// Aus der Datenbank laden, sofern möglich
-		if(db.loadPlan(mensa, naechsteWoche))
+		if (db.loadPlan(mensa, naechsteWoche))
 			update(naechsteWoche);
 		else
 			new DownloadTask(mensa, naechsteWoche, background).execute();
@@ -185,28 +226,36 @@ public class MensaActivity extends Activity {
 	 * @param naechsteWoche
 	 */
 	public void update(boolean naechsteWoche) {
-		showDay(currentDay);
+		if (mensa.hasAnyFood(naechsteWoche)) {
+			if (pagerAdapter == null)
+				initializePages();
+
+			for (int day = Calendar.MONDAY + (naechsteWoche ? 7 : 0); day <= Calendar.FRIDAY
+					+ (naechsteWoche ? 7 : 0); ++day) {
+				if (pagerAdapter.getCount() > 3 && !donated)
+					break;
+
+				List<Essen> essen = mensa.getPlan().get(day);
+				if (essen.size() > 0 && day >= today)
+					pagerAdapter.addPage(day, this,
+							new SimpleAdapter(this, essen,
+									android.R.layout.simple_list_item_2,
+									new String[] { Essen.TEXT, Essen.TEXT2 },
+									new int[] { android.R.id.text1,
+											android.R.id.text2 }) {
+								@Override
+								public boolean isEnabled(int position) {
+									return false;
+								}
+							});
+			}
+		} else if (!mensa.hasAnyFood(false) && !mensa.hasAnyFood(true))
+			initializeReloadButton();
 
 		// Noch keine Einträge für nächste Woche geladen, also tun wir das.
 		if (!naechsteWoche && !mensa.hasAnyFood(true)) {
 			loadPlan(true, currentDay <= Calendar.FRIDAY);
 		}
-	}
-
-	/**
-	 * Zeigt den Speiseplan für einen Tag an.
-	 * 
-	 * @param day
-	 */
-	public void showDay(int day) {
-		// Im Titel den Tag anzeigen
-		currentDay = day;
-		menu.updateTitle(day);
-
-		// Liste mit Essen anzeigen.
-		List<Essen> essen = mensa.getPlan().get(day);
-		SimpleAdapter adapter = new SimpleAdapter(this, essen, android.R.layout.simple_list_item_2, new String[] { Essen.TEXT, Essen.TEXT2 }, new int[] { android.R.id.text1, android.R.id.text2 });
-		view.setAdapter(adapter);
 	}
 
 	/**
@@ -243,16 +292,20 @@ public class MensaActivity extends Activity {
 	/**
 	 * Speichert die Mensa.
 	 * 
-	 * @param mensa zu setzende Mensa.
+	 * @param mensa
+	 *            zu setzende Mensa.
 	 */
 	public void setMensa(Mensa mensa) {
 		this.mensa = mensa;
-		
+
 		// Speichern.
 		SharedPreferences pref = getPreferences(0);
 		Editor editor = pref.edit();
 		editor.putString("mensa", mensa.toString());
 		editor.commit();
+		menu.updateTitle(mensa);
+
+		pagerAdapter.clear();
 	}
 
 	/**
@@ -293,17 +346,19 @@ public class MensaActivity extends Activity {
 		if (day == today)
 			return MensaActivity.getInstance().getString(R.string.today);
 		else
-			return MensaActivity.getInstance().getResources().getStringArray(R.array.daysOfWeek)[day];
+			return MensaActivity.getInstance().getResources()
+					.getStringArray(R.array.daysOfWeek)[day];
 	}
-	
+
 	/**
 	 * Setzt donated-Flag
+	 * 
 	 * @param donated
 	 */
 	protected void setDonated(boolean donated) {
 		this.donated = donated;
 	}
-	
+
 	public boolean hasDonated() {
 		return donated;
 	}

@@ -29,9 +29,12 @@ public class OptionMensa extends Option {
 	 */
 	@Override
 	public boolean onSelected() {
-		activity.setMensa(mensa);
-		activity.loadMensa(activity.getToday() > Calendar.FRIDAY);
-		return false;
+		if(activity.getMensa() != mensa)
+		{
+			activity.setMensa(mensa);
+			activity.loadMensa(activity.getToday() > Calendar.FRIDAY);
+		}
+		return true;
 	}
 
 	/**
@@ -51,6 +54,17 @@ public class OptionMensa extends Option {
 	 */
 	@Override
 	public boolean isVisible(int count) {
-		return mensa != activity.getMensa();
+		//return mensa != activity.getMensa();
+		return true;
+	}
+	
+	/**
+	 * Liefert die Mensa zurück, die zu dieser Option gehört.
+	 * 
+	 * @return
+	 */
+	public Mensa getMensa()
+	{
+		return mensa;
 	}
 }

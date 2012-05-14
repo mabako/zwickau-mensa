@@ -19,24 +19,6 @@ abstract class Option {
 	public abstract String getText();
 
 	/**
-	 * Kleinerer Text für das ICS-Menü.
-	 * 
-	 * @return
-	 */
-	public String getSubText() {
-		return null;
-	}
-
-	/**
-	 * Kleiner Text für das Dropdown-Menü für ICS.
-	 * 
-	 * @return
-	 */
-	public String getDropdownText() {
-		return null;
-	}
-
-	/**
 	 * Ist diese Option sichtbar?
 	 * 
 	 * @return

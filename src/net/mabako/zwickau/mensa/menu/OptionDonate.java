@@ -24,15 +24,4 @@ public class OptionDonate extends Option {
 	public boolean isVisible(int count) {
 		return true;
 	}
-
-	/**
-	 * Kleiner Text für das Dropdown-Menü für ICS.
-	 * 
-	 * @return
-	 */
-	public String getDropdownText() {
-		if(!activity.hasDonated())
-			return "1€";
-		return super.getDropdownText();
-	}
 }

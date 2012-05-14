@@ -9,7 +9,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -53,7 +52,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			while(cursor.moveToNext())
 			{
 				foundAny = true;
-				essen.push(new Essen(cursor.getString(0), cursor.getString(1)));
+				essen.add(new Essen(cursor.getString(0), cursor.getString(1)));
 			}
 			plan.put(i, essen);
 		}

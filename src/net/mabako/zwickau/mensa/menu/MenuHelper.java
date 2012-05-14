@@ -1,8 +1,6 @@
 package net.mabako.zwickau.mensa.menu;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.mabako.zwickau.mensa.Mensa;
@@ -42,11 +40,6 @@ public abstract class MenuHelper {
 	 * Erstellt alle Optionen.
 	 */
 	protected MenuHelper() {
-		// Alle Tage hinzufügen.
-		for (int day : getSelectableDays()) {
-			options.add(new OptionDay(day));
-		}
-
 		for (Mensa mensa : Mensa.values()) {
 			options.add(new OptionMensa(mensa));
 		}
@@ -55,26 +48,11 @@ public abstract class MenuHelper {
 	}
 
 	/**
-	 * Gibt eine Liste aller auswählbarer Tage zurück.
-	 * 
-	 * @return Liste aller auswählbarer Tage.
-	 */
-	private final List<Integer> getSelectableDays() {
-		List<Integer> days = new LinkedList<Integer>();
-		for (int i = activity.getToday(); i <= 7 + Calendar.FRIDAY; ++i) {
-			if (i % 7 > Calendar.SUNDAY) {
-				days.add(i);
-			}
-		}
-		return days;
-	}
-
-	/**
 	 * Aktualisiert den Titel der Anwendung.
 	 * 
-	 * @param day
+	 * @param mensa
 	 */
-	public void updateTitle(int day) {
+	public void updateTitle(Mensa mensa) {
 	}
 
 	/**
