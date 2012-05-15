@@ -291,20 +291,26 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int default_title_indicator_top_padding=0x7f080009;
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
-        public static final int vpi__tab_indicator=0x7f020001;
-        public static final int vpi__tab_selected_focused_holo=0x7f020002;
-        public static final int vpi__tab_selected_holo=0x7f020003;
-        public static final int vpi__tab_selected_pressed_holo=0x7f020004;
-        public static final int vpi__tab_unselected_focused_holo=0x7f020005;
-        public static final int vpi__tab_unselected_holo=0x7f020006;
-        public static final int vpi__tab_unselected_pressed_holo=0x7f020007;
+        public static final int fav=0x7f020000;
+        public static final int favo=0x7f020001;
+        public static final int ic_launcher=0x7f020002;
+        public static final int refresh=0x7f020003;
+        public static final int refresho=0x7f020004;
+        public static final int vpi__tab_indicator=0x7f020005;
+        public static final int vpi__tab_selected_focused_holo=0x7f020006;
+        public static final int vpi__tab_selected_holo=0x7f020007;
+        public static final int vpi__tab_selected_pressed_holo=0x7f020008;
+        public static final int vpi__tab_unselected_focused_holo=0x7f020009;
+        public static final int vpi__tab_unselected_holo=0x7f02000a;
+        public static final int vpi__tab_unselected_pressed_holo=0x7f02000b;
     }
     public static final class id {
         public static final int actionbar_text=0x7f040005;
+        public static final int donate=0x7f040009;
         public static final int horizontal=0x7f040000;
         public static final int none=0x7f040002;
         public static final int pager=0x7f040007;
+        public static final int reload=0x7f04000a;
         public static final int reload_button=0x7f040008;
         public static final int titles=0x7f040006;
         public static final int triangle=0x7f040003;
@@ -321,6 +327,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int main=0x7f030002;
         public static final int reload=0x7f030003;
         public static final int vpi__tab=0x7f030004;
+    }
+    public static final class menu {
+        public static final int menu=0x7f0c0000;
     }
     public static final class string {
         public static final int app_name=0x7f0a0001;

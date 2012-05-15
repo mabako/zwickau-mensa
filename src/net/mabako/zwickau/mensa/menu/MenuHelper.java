@@ -1,13 +1,10 @@
 package net.mabako.zwickau.mensa.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.mabako.zwickau.mensa.Mensa;
 import net.mabako.zwickau.mensa.MensaActivity;
-
-import android.os.Build;
+import net.mabako.zwickau.mensa.R;
+import net.robotmedia.billing.BillingController;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 /**
@@ -15,12 +12,9 @@ import android.view.MenuItem;
  * 
  * @author Marcus Bauer (mabako@gmail.com)
  */
-public abstract class MenuHelper {
+public class MenuHelper {
 	/** Activity */
 	protected MensaActivity activity = MensaActivity.getInstance();
-
-	/** Liste mit Optionen */
-	protected List<Option> options = new ArrayList<Option>();
 
 	/**
 	 * Liefert die für die jeweilige Plattform kompatible Instanz zurück.
@@ -28,41 +22,19 @@ public abstract class MenuHelper {
 	 * @return
 	 */
 	public static MenuHelper getInstance() {
-		// Anhand der SDK-Version das zu verwendende Menü auswählen.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			return new MenuICS();
-		} else {
-			return new MenuOld();
-		}
+		return new MenuHelper();
 	}
-
+	
 	/**
-	 * Erstellt alle Optionen.
-	 */
-	protected MenuHelper() {
-		for (Mensa mensa : Mensa.values()) {
-			options.add(new OptionMensa(mensa));
-		}
-		
-		options.add(new OptionDonate());
-	}
-
-	/**
-	 * Aktualisiert den Titel der Anwendung.
-	 * 
-	 * @param mensa
-	 */
-	public void updateTitle(Mensa mensa) {
-	}
-
-	/**
-	 * Erstellt ein (altes) Menü.
+	 * Erstellt das Menü.
 	 * 
 	 * @param menu
 	 * @return
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
-		return false;
+		MenuInflater inflater = activity.getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
 	}
 
 	/**
@@ -72,7 +44,9 @@ public abstract class MenuHelper {
 	 * @return
 	 */
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		return false;
+		MenuItem donate = menu.findItem(R.id.donate);
+		donate.setVisible(!activity.hasDonated());
+		return true;
 	}
 
 	/**
@@ -82,6 +56,16 @@ public abstract class MenuHelper {
 	 * @return
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId())
+		{
+			case R.id.donate:
+				if(!activity.hasDonated())
+					BillingController.requestPurchase(activity, MensaActivity.DONATE, true);
+				break;
+			case R.id.reload:
+				activity.reload();
+				break;
+		}
 		return false;
 	}
 }

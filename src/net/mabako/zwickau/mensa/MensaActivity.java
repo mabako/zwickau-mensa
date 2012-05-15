@@ -13,8 +13,10 @@ import net.robotmedia.billing.model.Transaction.PurchaseState;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,12 +50,12 @@ public class MensaActivity extends Activity {
 	/** Datenbank-Helfer */
 	DatabaseHandler db = new DatabaseHandler(this);
 
-	AbstractBillingObserver billingObserver;
+	private AbstractBillingObserver billingObserver;
 
 	public final static String DONATE = "net.mabako.zwickau.mensa.donate";
 
 	/** alle Views */
-	MensaPagerAdapter pagerAdapter;
+	private MensaPagerAdapter pagerAdapter;
 
 	/**
 	 * Berechnet den heutigen Tag, erstellt das Menü und lädt den Speiseplan.
@@ -83,7 +85,7 @@ public class MensaActivity extends Activity {
 		if (menu == null) {
 			menu = MenuHelper.getInstance();
 		}
-		menu.updateTitle(mensa);
+		setTitle(mensa.getName());
 
 		// Den Plan der aktuellen Mensa laden.
 		loadMensa(isNextWeek());
@@ -103,12 +105,14 @@ public class MensaActivity extends Activity {
 		billingObserver = new AbstractBillingObserver(this) {
 			public void onRequestPurchaseResponse(String itemId,
 					ResponseCode response) {
+				Log.d("psc", itemId + " => " + response.toString());
 				if (itemId.equals(DONATE))
 					setDonated(response == ResponseCode.RESULT_OK);
 			}
 
 			public void onPurchaseStateChanged(String itemId,
 					PurchaseState state) {
+				Log.d("psc", itemId + " => " + state.toString());
 				if (itemId.equals(DONATE))
 					setDonated(state == PurchaseState.PURCHASED);
 			}
@@ -304,7 +308,7 @@ public class MensaActivity extends Activity {
 		Editor editor = pref.edit();
 		editor.putString("mensa", mensa.toString());
 		editor.commit();
-		menu.updateTitle(mensa);
+		setTitle(mensa.getName());
 
 		pagerAdapter.clear();
 	}
@@ -358,9 +362,26 @@ public class MensaActivity extends Activity {
 	 */
 	protected void setDonated(boolean donated) {
 		this.donated = donated;
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			// Lädt sonst die Klasse nicht, VerifyError, da invalidateOptionsMenu erst ab SDK 11 existiert.
+			new Object(){public void run(){instance.invalidateOptionsMenu();}}.run();
 	}
 
 	public boolean hasDonated() {
 		return donated;
+	}
+
+	public void reload() {
+		db.deleteAllFood();
+		
+		initializeReloadButton();
+		
+		mensa.getPlan().clear();
+		
+		pagerAdapter.clear();
+		pagerAdapter = null;
+		
+		loadMensa(isNextWeek());
 	}
 }
