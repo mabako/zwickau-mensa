@@ -9,13 +9,13 @@
         <item>Mittwoch</item>
         <item>Donnerstag</item>
         <item>Freitag</item>
-        <item>nächster Samstag</item>
-        <item>nächster Sonntag</item>
-        <item>nächster Montag</item>
-        <item>nächster Dienstag</item>
-        <item>nächster Mittwoch</item>
-        <item>nächster Donnerstag</item>
-        <item>nächster Freitag</item>
+        <item>n. Samstag</item>
+        <item>n. Sonntag</item>
+        <item>n. Montag</item>
+        <item>n. Dienstag</item>
+        <item>n. Mittwoch</item>
+        <item>n. Donnerstag</item>
+        <item>n. Freitag</item>
     </array>
     <string name="today">Heute</string>
     
