@@ -306,13 +306,14 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     }
     public static final class id {
         public static final int actionbar_text=0x7f040005;
-        public static final int donate=0x7f040009;
+        public static final int donate=0x7f04000a;
         public static final int horizontal=0x7f040000;
+        public static final int loading_progress_bar=0x7f040006;
         public static final int none=0x7f040002;
-        public static final int pager=0x7f040007;
-        public static final int reload=0x7f04000a;
-        public static final int reload_button=0x7f040008;
-        public static final int titles=0x7f040006;
+        public static final int pager=0x7f040009;
+        public static final int reload=0x7f04000b;
+        public static final int reload_button=0x7f040007;
+        public static final int titles=0x7f040008;
         public static final int triangle=0x7f040003;
         public static final int underline=0x7f040004;
         public static final int vertical=0x7f040001;
@@ -324,9 +325,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class layout {
         public static final int actionbar=0x7f030000;
         public static final int actionbar_dropdown=0x7f030001;
-        public static final int main=0x7f030002;
-        public static final int reload=0x7f030003;
-        public static final int vpi__tab=0x7f030004;
+        public static final int loading=0x7f030002;
+        public static final int loading_failed=0x7f030003;
+        public static final int main=0x7f030004;
+        public static final int vpi__tab=0x7f030005;
     }
     public static final class menu {
         public static final int menu=0x7f0c0000;
@@ -334,10 +336,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class string {
         public static final int app_name=0x7f0a0001;
         public static final int desc=0x7f0a0003;
-        public static final int donate=0x7f0a0006;
-        public static final int donate_thanks=0x7f0a0007;
+        public static final int donate=0x7f0a0007;
         public static final int hello=0x7f0a0000;
-        public static final int loading_main=0x7f0a0004;
+        public static final int loading=0x7f0a0004;
+        public static final int loading_failed=0x7f0a0006;
         public static final int reload=0x7f0a0005;
         public static final int today=0x7f0a0002;
     }

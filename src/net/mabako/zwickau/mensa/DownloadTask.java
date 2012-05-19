@@ -11,7 +11,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 /**
@@ -24,14 +23,8 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
 	/** Encoding der Mensa-Seiten. */
 	private static final String ENCODING = "windows-1252";
 
-	/** Bitte warten-Dialog */
-	private ProgressDialog progressDialog;
-
 	/** Holt dieser Task den Fraß dieser Woche oder der nächsten Woche? */
 	private boolean naechsteWoche = false;
-
-	/** Im Hintergrund? Falls ja wird kein Fortschrittsdialog angezeigt. */
-	private boolean background = false;
 
 	/** Die entsprechende Mensa. */
 	private Mensa mensa;
@@ -44,26 +37,10 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
 	 * @param naechsteWoche
 	 *            <code>true</code>, falls das Essen der nächsten Woche geholt
 	 *            werden soll.
-	 * @param background
-	 *            falls <code>true</code>, wird kein Fortschrittsdialog
-	 *            angezeigt.
 	 */
-	public DownloadTask(Mensa mensa, boolean naechsteWoche, boolean background) {
+	public DownloadTask(Mensa mensa, boolean naechsteWoche) {
 		this.mensa = mensa;
 		this.naechsteWoche = naechsteWoche;
-		this.background = background;
-	}
-
-	/**
-	 * Zeigt den Fortschrittsdialog an, falls dieser Task nicht im Hintergrund
-	 * läuft.
-	 */
-	@Override
-	protected void onPreExecute() {
-		// Dialog zum Warten zeigen.
-		if (!background) {
-			progressDialog = ProgressDialog.show(MensaActivity.getInstance(), "", MensaActivity.getInstance().getString(R.string.loading_main), true);
-		}
 	}
 
 	/**
@@ -146,11 +123,5 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
 		// Aktuelle Woche ODER es ist schon Samstag/Sonntag, also wird der Plan
 		// aktualisiert.
 		MensaActivity.getInstance().update(naechsteWoche);
-
-		// Sofern überhaupt eine Fortschrittsanzeige da war, schließen wir
-		// diese.
-		if (progressDialog != null) {
-			progressDialog.dismiss();
-		}
 	}
 }

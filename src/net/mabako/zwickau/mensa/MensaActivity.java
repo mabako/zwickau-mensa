@@ -67,6 +67,7 @@ public class MensaActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		instance = this;
+		setContentView(R.layout.loading);
 
 		// Gespeicherte Mensa (d.h. zuletzt aufgerufene) laden
 		SharedPreferences pref = getPreferences(0);
@@ -163,8 +164,12 @@ public class MensaActivity extends Activity {
 		return naechsteWoche;
 	}
 
+	/**
+	 * Setzt das Layout und fügt dem "Neu laden"-Button einen Listener hinzu.
+	 */
 	private void initializeReloadButton() {
-		setContentView(R.layout.reload);
+		setContentView(R.layout.loading_failed);
+		
 		Button reload = (Button) findViewById(R.id.reload_button);
 		reload.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -222,7 +227,12 @@ public class MensaActivity extends Activity {
 		if (db.loadPlan(mensa, naechsteWoche))
 			update(naechsteWoche);
 		else
-			new DownloadTask(mensa, naechsteWoche, background).execute();
+		{
+			if(!background)
+				setContentView(R.layout.loading);
+			
+			new DownloadTask(mensa, naechsteWoche).execute();
+		}
 	}
 
 	/**
@@ -237,7 +247,7 @@ public class MensaActivity extends Activity {
 
 			for (int day = Calendar.MONDAY + (naechsteWoche ? 7 : 0); day <= Calendar.FRIDAY
 					+ (naechsteWoche ? 7 : 0); ++day) {
-				if (pagerAdapter.getCount() > 3 && !donated)
+				if (pagerAdapter.getCount() >= 3 && !donated)
 					break;
 
 				List<Essen> essen = mensa.getPlan().get(day);
@@ -372,15 +382,22 @@ public class MensaActivity extends Activity {
 		return donated;
 	}
 
+	/**
+	 * Lädt den Speiseplan erneut.
+	 */
 	public void reload() {
 		db.deleteAllFood();
 		
 		initializeReloadButton();
 		
+		if(mensa != null)
 		mensa.getPlan().clear();
 		
-		pagerAdapter.clear();
-		pagerAdapter = null;
+		if(pagerAdapter != null)
+		{
+			pagerAdapter.clear();
+			pagerAdapter = null;
+		}
 		
 		loadMensa(isNextWeek());
 	}
