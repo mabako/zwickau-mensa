@@ -325,10 +325,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class layout {
         public static final int actionbar=0x7f030000;
         public static final int actionbar_dropdown=0x7f030001;
-        public static final int loading=0x7f030002;
-        public static final int loading_failed=0x7f030003;
-        public static final int main=0x7f030004;
-        public static final int vpi__tab=0x7f030005;
+        public static final int listitem=0x7f030002;
+        public static final int loading=0x7f030003;
+        public static final int loading_failed=0x7f030004;
+        public static final int main=0x7f030005;
+        public static final int vpi__tab=0x7f030006;
     }
     public static final class menu {
         public static final int menu=0x7f0c0000;

@@ -254,7 +254,7 @@ public class MensaActivity extends Activity {
 				if (essen.size() > 0 && day >= today)
 					pagerAdapter.addPage(day, this,
 							new SimpleAdapter(this, essen,
-									android.R.layout.simple_list_item_2,
+									R.layout.listitem,
 									new String[] { Essen.TEXT, Essen.TEXT2 },
 									new int[] { android.R.id.text1,
 											android.R.id.text2 }) {
