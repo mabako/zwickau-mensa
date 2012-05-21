@@ -21,6 +21,9 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="15dp"
         android:gravity="center"
+        android:maxLines="2"
+        android:singleLine="false"
+        android:scrollHorizontally="false"
         android:text="@string/loading_failed"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
