@@ -60,6 +60,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				essen.add(new Essen(cursor.getString(0), cursor.getString(1)));
 			}
 			plan.put(i, essen);
+			cursor.close();
 		}
 		return foundAny;
 	}
