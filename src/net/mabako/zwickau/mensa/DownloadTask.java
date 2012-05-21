@@ -102,7 +102,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
 	 * @throws IOException
 	 */
 	private String readAllContent(InputStreamReader inputStream) throws IOException {
-		BufferedReader in = new BufferedReader(inputStream);
+		BufferedReader in = new BufferedReader(inputStream, 2048);
 
 		// Zeilenweise einlesen.
 		String line;
